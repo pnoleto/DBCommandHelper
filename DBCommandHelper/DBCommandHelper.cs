@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Xml;
 
 namespace Domain.Helpers.Infrastructure
 {
@@ -100,8 +99,16 @@ namespace Domain.Helpers.Infrastructure
         /// <param name="Valor">Valor que sera adicionado ao parametro</param>
         public static void CriarParametroComValor(IDbCommand DbCommand, string NomeParametro, object Valor)
         {
-            CriarParametro(DbCommand, NomeParametro, ObterTipoDoParametro(Valor.GetType()));
-            AdicionarValorAoParametro(DbCommand, NomeParametro, Valor);
+            if (Valor != DBNull.Value || Valor != null)
+            {
+                CriarParametro(DbCommand, NomeParametro, ObterTipoDoParametro(Valor.GetType()));
+                AdicionarValorAoParametro(DbCommand, NomeParametro, Valor);
+            }
+            else
+            {
+                CriarParametro(DbCommand, NomeParametro, DbType.Object);
+                AdicionarValorAoParametro(DbCommand, NomeParametro, DBNull.Value);
+            }
         }
     }
 }
