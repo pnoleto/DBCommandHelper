@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBCommandHelper", "DBCommandHelper\DBCommandHelper.csproj", "{F1A796E6-66EE-47EF-B228-6833B59644E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbCommandHelperTests", "DbCommand\DbCommandHelperTests.csproj", "{553E9EBC-AE37-48AD-A33C-9C82077E5FB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbCommandHelperTests", "DbCommandHelperTests\DbCommandHelperTests.csproj", "{553E9EBC-AE37-48AD-A33C-9C82077E5FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
