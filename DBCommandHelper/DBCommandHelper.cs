@@ -75,7 +75,7 @@ namespace Domain.Helpers.Infrastructure
         /// <param name="Valor">Valor que sera adicionado ao parametro</param>
         public static void AdicionarValorAoParametro<TTipo>(IDbCommand DbCommand, string NomeParametro, TTipo Valor)
         {
-            ((IDataParameter)DbCommand.Parameters[NomeParametro]).Value = Valor;
+            ((IDataParameter)DbCommand.Parameters[NomeParametro]).Value = SeNuloARetornaDbNull(Valor);
         }
         /// <summary>
         /// Cria um parametro no IDbCommand informado com um determinado DbType nome e valor
@@ -88,7 +88,7 @@ namespace Domain.Helpers.Infrastructure
         public static void CriarParametroComValor<TTipo>(IDbCommand DbCommand, string NomeParametro, DbType TipoParametro, TTipo Valor)
         {
             CriarParametro(DbCommand, NomeParametro, TipoParametro);
-            AdicionarValorAoParametro(DbCommand, NomeParametro, Valor);
+            AdicionarValorAoParametro(DbCommand, NomeParametro, SeNuloARetornaDbNull(Valor));
         }
 
         /// <summary>
@@ -99,16 +99,18 @@ namespace Domain.Helpers.Infrastructure
         /// <param name="Valor">Valor que sera adicionado ao parametro</param>
         public static void CriarParametroComValor(IDbCommand DbCommand, string NomeParametro, object Valor)
         {
-            if (Valor != DBNull.Value || Valor != null)
-            {
                 CriarParametro(DbCommand, NomeParametro, ObterTipoDoParametro(Valor.GetType()));
-                AdicionarValorAoParametro(DbCommand, NomeParametro, Valor);
-            }
-            else
-            {
-                CriarParametro(DbCommand, NomeParametro, DbType.Object);
-                AdicionarValorAoParametro(DbCommand, NomeParametro, DBNull.Value);
-            }
+                AdicionarValorAoParametro(DbCommand, NomeParametro, SeNuloARetornaDbNull(Valor));
+        }
+
+        private static object SeNuloARetornaDbNull(object Valor)
+        {
+            object valor = DBNull.Value;
+
+            if (!Equals(valor, null))
+                valor = Valor;
+
+            return valor;
         }
     }
 }
