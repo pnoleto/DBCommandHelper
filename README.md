@@ -1,5 +1,5 @@
 # Introduction 
-DBCommandHelper is a Extension method based Classe that let you to create sql parameter and easily apply in a DB Connection with any connector.
+DBCommandHelper is an Extension method based Classe that let you to create sql parameter and easily apply in a DB Connection with any connector.
 
 # Getting Started
 1. Run that command in your project Install-Package DBCommandHelper -Version 1.0.0 or find for DbCommandHelper on Nuget Packet manager and install it.
