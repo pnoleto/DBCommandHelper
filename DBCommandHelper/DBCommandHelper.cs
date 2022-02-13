@@ -47,7 +47,14 @@ namespace Domain.Helpers.Infrastructure
 
         private static void IfDbCommandNullThrowException(this IDbCommand dbCommand)
         {
-            if (dbCommand == null) throw new ArgumentNullException(nameof(IDbCommand));
+            if (dbCommand == null) throw new ArgumentNullException(nameof(dbCommand));
+        }
+
+        private static void IfParamNameNullThrowException(this string paramValue)
+        {
+            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+
+            if (!string.IsNullOrEmpty(paramValue)) throw new ArgumentNullException(nameof(paramValue));
         }
         /// <summary>
         /// Dicionario utilizado para resolver o DbType de um determinado tipo primitivo
@@ -57,6 +64,8 @@ namespace Domain.Helpers.Infrastructure
         /// <returns></returns>
         private static DbType ReturnParameterType(Type type)
         {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             return typeMap[type];
         }
         /// <summary>
@@ -68,6 +77,7 @@ namespace Domain.Helpers.Infrastructure
         public static void CreateParamWithName(this IDbCommand dbCommand, string paramName, DbType paramType)
         {
             dbCommand.IfDbCommandNullThrowException();
+            paramName.IfParamNameNullThrowException();
 
             IDataParameter param = dbCommand.CreateParameter();
             param.ParameterName = paramName;
@@ -79,30 +89,32 @@ namespace Domain.Helpers.Infrastructure
         /// <summary>
         /// Adiciona valor ao parametro que foi criado anteriormente
         /// </summary>
-        /// <typeparam name="TTipo">Tipo do objeto que sera o valor do parametro</typeparam>
+        /// <typeparam name="TType">Tipo do objeto que sera o valor do parametro</typeparam>
         /// <param name="dbCommand">IDbCommand que sera adicionado o parametro</param>
         /// <param name="paramName">Nome do parametro que sera criado no IDbCommand</param>
         /// <param name="paramValue">Valor que sera adicionado ao parametro</param>
-        public static void SetParamValue<TTipo>(this IDbCommand dbCommand, string paramName, TTipo paramValue)
+        public static void SetParamValue<TType>(this IDbCommand dbCommand, string paramName, TType paramValue)
         {
             dbCommand.IfDbCommandNullThrowException();
+            paramName.IfParamNameNullThrowException();
 
-            ((IDataParameter)dbCommand.Parameters[paramName]).Value = IfNullThenReturnDbNullValue(paramValue);
+            ((IDataParameter)dbCommand.Parameters[paramName]).Value = IfNullReturnDbNullValue(paramValue);
         }
         /// <summary>
         /// Cria um parametro no IDbCommand informado com um determinado DbType nome e valor
         /// </summary>
-        /// <typeparam name="TTipo">Tipo do objeto que sera o valor do parametro</typeparam>
+        /// <typeparam name="TType">Tipo do objeto que sera o valor do parametro</typeparam>
         /// <param name="dbCommand">IDbCommand que sera adicionado o parametro</param>
         /// <param name="paramName">Nome do parametro que sera criado no IDbCommand</param>
         /// <param name="paramType">Tipo de dados DbType que sera passado no parametro</param>
         /// <param name="paramValue">Valor que sera adicionado ao parametro</param>
-        public static void CreateParamWithNameTypeAndValue<TTipo>(this IDbCommand dbCommand, string paramName, DbType paramType, TTipo paramValue)
+        public static void CreateParamWithNameTypeAndValue<TType>(this IDbCommand dbCommand, string paramName, DbType paramType, TType paramValue)
         {
             dbCommand.IfDbCommandNullThrowException();
+            paramName.IfParamNameNullThrowException();
 
             CreateParamWithName(dbCommand, paramName, paramType);
-            SetParamValue(dbCommand, paramName, IfNullThenReturnDbNullValue(paramValue));
+            SetParamValue(dbCommand, paramName, IfNullReturnDbNullValue(paramValue));
         }
 
         /// <summary>
@@ -114,12 +126,13 @@ namespace Domain.Helpers.Infrastructure
         public static void CreateParamWithNameAndValue(this IDbCommand dbCommand, string paramName, object paramValue)
         {
             dbCommand.IfDbCommandNullThrowException();
+            paramName.IfParamNameNullThrowException();
 
             CreateParamWithName(dbCommand, paramName, ReturnParameterType(paramValue.GetType()));
-            SetParamValue(dbCommand, paramName, IfNullThenReturnDbNullValue(paramValue));
+            SetParamValue(dbCommand, paramName, IfNullReturnDbNullValue(paramValue));
         }
 
-        private static object IfNullThenReturnDbNullValue(object inputValue)
+        private static object IfNullReturnDbNullValue(object inputValue)
         {
             return inputValue ?? DBNull.Value;
         }
