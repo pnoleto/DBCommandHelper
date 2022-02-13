@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 
-namespace Domain.Helpers.Infrastructure
+namespace DBCommandHelper
 {
     public static class DBCommandHelper
     {
@@ -50,11 +50,11 @@ namespace Domain.Helpers.Infrastructure
             if (dbCommand == null) throw new ArgumentNullException(nameof(dbCommand));
         }
 
-        private static void IfParamNameNullThrowException(this string paramValue)
+        private static void IfParamNameNullThrowException(this string paramName)
         {
-            if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+            if (paramName == null) throw new ArgumentNullException(nameof(paramName));
 
-            if (!string.IsNullOrEmpty(paramValue)) throw new ArgumentNullException(nameof(paramValue));
+            if (string.IsNullOrEmpty(paramName.Trim())) throw new ArgumentNullException(nameof(paramName));
         }
         /// <summary>
         /// Dicionario utilizado para resolver o DbType de um determinado tipo primitivo
@@ -74,7 +74,7 @@ namespace Domain.Helpers.Infrastructure
         /// <param name="dbCommand">IDbCommand que sera adicionado o parametro</param>
         /// <param name="paramName">Nome do parametro que sera criado no IDbCommand</param>
         /// <param name="paramType">Tipo de dados DbType que sera passado no parametro</param>
-        public static void CreateParamWithName(this IDbCommand dbCommand, string paramName, DbType paramType)
+        public static void CreateParamWithNameAndType(this IDbCommand dbCommand, string paramName, DbType paramType)
         {
             dbCommand.IfDbCommandNullThrowException();
             paramName.IfParamNameNullThrowException();
@@ -113,7 +113,7 @@ namespace Domain.Helpers.Infrastructure
             dbCommand.IfDbCommandNullThrowException();
             paramName.IfParamNameNullThrowException();
 
-            CreateParamWithName(dbCommand, paramName, paramType);
+            CreateParamWithNameAndType(dbCommand, paramName, paramType);
             SetParamValue(dbCommand, paramName, IfNullReturnDbNullValue(paramValue));
         }
 
@@ -128,7 +128,7 @@ namespace Domain.Helpers.Infrastructure
             dbCommand.IfDbCommandNullThrowException();
             paramName.IfParamNameNullThrowException();
 
-            CreateParamWithName(dbCommand, paramName, ReturnParameterType(paramValue.GetType()));
+            CreateParamWithNameAndType(dbCommand, paramName, ReturnParameterType(paramValue.GetType()));
             SetParamValue(dbCommand, paramName, IfNullReturnDbNullValue(paramValue));
         }
 
