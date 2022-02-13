@@ -2,19 +2,5 @@
 DBCommandHelper is a Extension method based Classe that let you to create sql parameter and easily apply in a DB Connection with any connector. 
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
-
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
-
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+1. Run that command in your project Install-Package DBCommandHelper -Version 1.0.0 or find for DbCommandHelper on Nuget Packet manager and install it.
+2. Enjoy!	API references![image](https://user-images.githubusercontent.com/48934827/153776148-87aa7ce4-3b47-4e20-9264-19d081003ef8.png)
