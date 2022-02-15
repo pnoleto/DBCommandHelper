@@ -1,8 +1,8 @@
+using DBCommandHelper;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using Xunit;
-using DBCommandHelper;
-using System;
 
 namespace DbCommand
 {
@@ -19,30 +19,30 @@ namespace DbCommand
         public void CreateParamWithNameTypeAndValue()
         {
             dbCommand.CreateParamWithNameTypeAndValue("paramName1", DbType.String, "stringValue");
+            IDataParameter param = dbCommand.Parameters["paramName1"] as IDataParameter;
+            bool paramExistsAndHasValue = dbCommand.Parameters.Contains("paramName1") && param.Value.ToString() == "stringValue";
 
-            bool paramExists = dbCommand.Parameters.Contains("paramName1");
-
-            Assert.True(paramExists);
+            Assert.True(paramExistsAndHasValue);
         }
 
         [Fact]
         public void CreateParamWithName()
         {
             dbCommand.CreateParamWithNameAndType("paramName2", DbType.String);
+            IDataParameter param = dbCommand.Parameters["paramName2"] as IDataParameter;
+            bool paramExistsAndHasNullValue = dbCommand.Parameters.Contains("paramName2") && param.Value == null;
 
-            bool paramExists = dbCommand.Parameters.Contains("paramName2");
-
-            Assert.True(paramExists);
+            Assert.True(paramExistsAndHasNullValue);
         }
 
         [Fact]
         public void CreateParamWithNameAndValue()
         {
             dbCommand.CreateParamWithNameAndValue("paramName3", "stringValue");
+            IDataParameter param = dbCommand.Parameters["paramName3"] as IDataParameter;
+            bool paramExistsAndHasValue = dbCommand.Parameters.Contains("paramName3") && param.Value.ToString() == "stringValue";
 
-            bool paramExists = dbCommand.Parameters.Contains("paramName3");
-
-            Assert.True(paramExists);
+            Assert.True(paramExistsAndHasValue);
         }
 
         [Fact]

@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>1.0.0</Version>
     <Authors>Phelipe Noleto</Authors>
     <Company></Company>
-    <Description>Biblioteca para tratar parametro em qualquer conexao de banco de dados</Description>
+    <Description>DBCommandHelper is an Extension method based Classe that let you to create sql parameter and easily apply in a DB Connection with any connector.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Livre para uso comercial e não comercial</Copyright>
   </PropertyGroup>
