@@ -7,7 +7,7 @@
     <Company></Company>
     <Description>DBCommandHelper is an Extension method based Classe that let you to create sql parameter and easily apply in a DB Connection with any connector.</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Copyright>Livre para uso comercial e não comercial</Copyright>
+    <Copyright>Copyleft</Copyright>
   </PropertyGroup>
 
 </Project>
