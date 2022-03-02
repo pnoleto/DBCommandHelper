@@ -42,7 +42,6 @@ namespace DBCommandHelper
             [typeof(DateTime?)] = DbType.DateTime,
             [typeof(DateTimeOffset)] = DbType.DateTimeOffset,
             [typeof(DateTimeOffset?)] = DbType.DateTimeOffset
-            //typeMap[typeof(Binary)] = DbType.Binary;
         };
 
         private static void IfDbCommandNullThrowException(this IDbCommand dbCommand)
