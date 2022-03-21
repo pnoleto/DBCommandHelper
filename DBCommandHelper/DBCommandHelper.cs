@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Collections.Generic;
 
 namespace DBCommandHelper
 {
@@ -88,17 +88,33 @@ namespace DBCommandHelper
             dbCommand.IfDbCommandNullThrowException();
             paramName.IfParamNameNullThrowException();
 
-            CreateParamWithNameAndType(dbCommand, paramName, paramType);
-            SetParamValue(dbCommand, paramName, IfNullReturnDbNullValue(paramValue));
+            dbCommand.CreateParamWithNameAndType(paramName, paramType);
+            dbCommand.SetParamValue(paramName, IfNullReturnDbNullValue(paramValue));
         }
 
+        /// <summary>
+        /// Automatically resolve parameter DbType
+        /// </summary>
+        /// <param name="dbCommand"></param>
+        /// <param name="paramName"></param>
+        /// <param name="paramValue"></param>
         public static void CreateParamWithNameAndValue(this IDbCommand dbCommand, string paramName, object paramValue)
         {
             dbCommand.IfDbCommandNullThrowException();
             paramName.IfParamNameNullThrowException();
 
-            CreateParamWithNameAndType(dbCommand, paramName, ReturnParameterType(paramValue.GetType()));
-            SetParamValue(dbCommand, paramName, IfNullReturnDbNullValue(paramValue));
+            dbCommand.CreateParamWithNameAndType(paramName, ReturnParameterType(paramValue.GetType()));
+            dbCommand.SetParamValue(paramName, IfNullReturnDbNullValue(paramValue));
+        }
+
+        public static void ClearParamValue(this IDbCommand dbCommand, string paramName)
+        {
+            dbCommand.SetParamValue(paramName, DBNull.Value);
+        }
+
+        public static void CleanAllParamValues(this IDbCommand dbCommand)
+        {
+            for (int i = 0; i < dbCommand.Parameters.Count; i++) ((IDataParameter)dbCommand.Parameters[i]).Value = DBNull.Value;
         }
 
         private static object IfNullReturnDbNullValue(object inputValue)

@@ -1,7 +1,9 @@
 using DBCommandHelper;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using Xunit;
 
 namespace DbCommand
@@ -13,6 +15,24 @@ namespace DbCommand
         public UnitDbCommandHelperTests()
         {
             _dbCommand = new SqlCommand();
+        }
+
+        [Fact]
+        public void CleanAllDbCommandParameterValues()
+        {
+            _dbCommand.CreateParamWithNameTypeAndValue("paramName1", DbType.String, "stringValue");
+            _dbCommand.CreateParamWithNameTypeAndValue("paramName2", DbType.String, "stringValue");
+            _dbCommand.CreateParamWithNameTypeAndValue("paramName3", DbType.String, "stringValue");
+
+            _dbCommand.CleanAllParamValues();
+
+            IList<IDataParameter> paramList = new List<IDataParameter>();
+
+            foreach (IDataParameter item in _dbCommand.Parameters) paramList.Add(item);
+
+            bool paramsHasValue = paramList.Where(y => !string.IsNullOrEmpty(y.Value.ToString())).Any();
+
+            Assert.False(paramList.Any() && paramsHasValue);
         }
 
         [Fact]
