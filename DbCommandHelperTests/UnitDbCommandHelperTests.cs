@@ -1,111 +1,76 @@
 using DBCommandHelper;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using Xunit;
 
-namespace DbCommand
+namespace DbCommandHelper
 {
     public class UnitDbCommandHelperTests
     {
-        private readonly IDbCommand _dbCommand;
+        private readonly IDbCommand _dbCommand = new SqlCommand();
 
-        public UnitDbCommandHelperTests()
+        [Fact()]
+        public void CreateParamWithNameAndType()
         {
-            _dbCommand = new SqlCommand();
+            _dbCommand.CreateParameter("paramName", DbType.String);
+
+            Assert.True(!DbParameterExistsAndHasValue("paramName"));
+
+            Assert.True(DbParameterTypeEquals("paramName", DbType.String));
         }
 
-        [Fact]
-        public void CleanAllDbCommandParameterValues()
-        {
-            _dbCommand.CreateParamWithNameTypeAndValue("paramName1", DbType.String, "stringValue");
-            _dbCommand.CreateParamWithNameTypeAndValue("paramName2", DbType.String, "stringValue");
-            _dbCommand.CreateParamWithNameTypeAndValue("paramName3", DbType.String, "stringValue");
-
-            _dbCommand.CleanAllParamValues();
-
-            IList<IDataParameter> paramList = new List<IDataParameter>();
-
-            foreach (IDataParameter item in _dbCommand.Parameters) paramList.Add(item);
-
-            bool paramsHasValue = paramList.Where(y => !string.IsNullOrEmpty(y.Value.ToString())).Any();
-
-            Assert.False(paramList.Any() && paramsHasValue);
-        }
-
-        [Fact]
-        public void CreateParamWithNameTypeAndValue()
-        {
-            _dbCommand.CreateParamWithNameTypeAndValue("paramName1", DbType.String, "stringValue");
-            IDataParameter param = (IDataParameter)_dbCommand.Parameters["paramName1"];
-
-            Assert.True(GetParamExistsAnHasValue(param));
-        }
-
-        [Fact]
-        public void CreateParamWithName()
-        {
-            _dbCommand.CreateParamWithNameAndType("paramName2", DbType.String);
-            IDataParameter param = (IDataParameter)_dbCommand.Parameters["paramName2"];
-
-            Assert.True(GetParamExistsAndHasNullValue(param));
-        }
-
-        [Fact]
+        [Fact()]
         public void CreateParamWithNameAndValue()
         {
-            _dbCommand.CreateParamWithNameAndValue("paramName3", "stringValue");
-            IDataParameter param = (IDataParameter)_dbCommand.Parameters["paramName3"];
+            _dbCommand.CreateParameter("paramName", "test");
 
-            Assert.True(GetParamExistsAndHasValue(param));
-        }
+            Assert.True(DbParameterValueEquals("paramName", "test"));
 
-        [Fact]
-        public void SetParamValueShouldThrowAnException()
-        {
-            Assert.Throws<ArgumentNullException>(() => { SetEmptyParamString(); });
+            Assert.True(DbParameterTypeEquals("paramName", DbType.String));
         }
 
-        [Fact]
-        public void SetParamWithNameAndValueShouldThrowAnException()
+        [Fact()]
+        public void CreateParamWithNameTypeAndValue()
         {
-            Assert.Throws<ArgumentNullException>(() => { CreateParamWithEmptyString(); });
+            _dbCommand.CreateParameter("paramName", DbType.String, "test");
+
+            Assert.True(DbParameterValueEquals("paramName", "test"));
+
+            Assert.True(DbParameterTypeEquals("paramName", DbType.String));
         }
 
-        [Fact]
-        public void SetParamWithNameValueAndTypeShouldThrowAnException()
+        [Fact()]
+        public void ClearParameters()
         {
-            Assert.Throws<ArgumentNullException>(() => { CreateParammWithNameTypeAndValue(); });
+            _dbCommand.CreateParameter("paramName", "test");
+
+            _dbCommand.Parameters.ClearValues();
+
+            object paramValue = ((IDataParameter)_dbCommand.Parameters["paramName"]).Value;
+
+            Assert.Equal(DBNull.Value, paramValue);
         }
 
-        private void CreateParammWithNameTypeAndValue()
+        private bool DbParameterTypeEquals(string paramName, DbType type)
         {
-            _dbCommand.CreateParamWithNameTypeAndValue("", DbType.String, "");
+            IDataParameter param = (IDataParameter)_dbCommand.Parameters[paramName];
+
+            return param.DbType.Equals(type);
         }
 
-        private void CreateParamWithEmptyString()
+        private bool DbParameterExistsAndHasValue(string paraName)
         {
-            _dbCommand.CreateParamWithNameAndValue("", "");
-        }
-        private bool GetParamExistsAndHasNullValue(IDataParameter param)
-        {
-            return _dbCommand.Parameters.Contains("paramName2") && param.Value == null;
+            IDataParameter param = (IDataParameter)_dbCommand.Parameters[paraName];
+
+            return param.Value != null;
         }
 
-        private bool GetParamExistsAnHasValue(IDataParameter param)
+        private bool DbParameterValueEquals(string paraName, string paramValue)
         {
-            return _dbCommand.Parameters.Contains("paramName1") && param.Value.ToString() == "stringValue";
-        }
+            IDataParameter param = (IDataParameter)_dbCommand.Parameters[paraName];
 
-        private bool GetParamExistsAndHasValue(IDataParameter param)
-        {
-            return _dbCommand.Parameters.Contains("paramName3") && param.Value.ToString() == "stringValue";
-        }
-        private void SetEmptyParamString()
-        {
-            _dbCommand.SetParamValue("", "");
+            return param.Value.Equals(paramValue);
         }
     }
 }

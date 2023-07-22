@@ -56,33 +56,56 @@ namespace DBCommandHelper
             if (string.IsNullOrEmpty(paramName.Trim())) throw new ArgumentNullException(nameof(paramName));
         }
 
-        private static DbType ReturnParameterType(Type type)
+        private static void IfParamTypeNullThrowException(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
+        }
+
+        private static DbType ReturnParameterType(Type type)
+        {
+            IfParamTypeNullThrowException(type);
 
             return typeMap[type];
         }
 
+        public static void CreateParameter(this IDbCommand dbCommand, string parameterName, DbType parameterType)
+        {
+            IDataParameter param = dbCommand.CreateParameter();
+
+            param.ParameterName = parameterName;
+            param.DbType = parameterType;
+
+            dbCommand.Parameters.Add(param);
+        }
+
+        public static void CreateParameter<TType>(this IDbCommand dbCommand, string parameterName, TType parameterValue)
+        {
+            CreateParameter(dbCommand, parameterName, ReturnParameterType(parameterValue.GetType()));
+
+            dbCommand.SetParamValue(parameterName, IfNullReturnDbNullValue(parameterValue));
+        }
+
+        public static void CreateParameter<TType>(this IDbCommand dbCommand, string parameterName, DbType parameterType, TType parameterValue)
+        {
+            CreateParameter(dbCommand, parameterName, parameterType);
+            dbCommand.SetParamValue(parameterName, IfNullReturnDbNullValue(parameterValue));
+        }
+
+        [Obsolete("This method is obsolete, use dbCommand.CreateParam('paramName', 'paramValue', DbType.VarChar) instead")]
         public static void CreateParamWithNameAndType(this IDbCommand dbCommand, string paramName, DbType paramType)
         {
             dbCommand.IfDbCommandNullThrowException();
             paramName.IfParamNameNullThrowException();
 
             IDataParameter param = dbCommand.CreateParameter();
+
             param.ParameterName = paramName;
             param.DbType = paramType;
 
             dbCommand.Parameters.Add(param);
         }
 
-        public static void SetParamValue<TType>(this IDbCommand dbCommand, string paramName, TType paramValue)
-        {
-            dbCommand.IfDbCommandNullThrowException();
-            paramName.IfParamNameNullThrowException();
-
-            ((IDataParameter)dbCommand.Parameters[paramName]).Value = IfNullReturnDbNullValue(paramValue);
-        }
-
+        [Obsolete("This method is obsolete, use dbCommand.CreateParam('paramName', 'paramValue', 'value') instead")]
         public static void CreateParamWithNameTypeAndValue<TType>(this IDbCommand dbCommand, string paramName, DbType paramType, TType paramValue)
         {
             dbCommand.IfDbCommandNullThrowException();
@@ -92,12 +115,7 @@ namespace DBCommandHelper
             dbCommand.SetParamValue(paramName, IfNullReturnDbNullValue(paramValue));
         }
 
-        /// <summary>
-        /// Automatically resolve parameter DbType
-        /// </summary>
-        /// <param name="dbCommand"></param>
-        /// <param name="paramName"></param>
-        /// <param name="paramValue"></param>
+        [Obsolete("This method is obsolete, use dbCommand.CreateParam('paramName', 'paramValue') instead")]
         public static void CreateParamWithNameAndValue(this IDbCommand dbCommand, string paramName, object paramValue)
         {
             dbCommand.IfDbCommandNullThrowException();
@@ -107,11 +125,23 @@ namespace DBCommandHelper
             dbCommand.SetParamValue(paramName, IfNullReturnDbNullValue(paramValue));
         }
 
+        [Obsolete("This method is obsolete")]
         public static void ClearParamValue(this IDbCommand dbCommand, string paramName)
         {
             dbCommand.SetParamValue(paramName, DBNull.Value);
         }
 
+        public static void SetParamValue<TType>(this IDbCommand dbCommand, string paramName, TType paramValue)
+        {
+            ((IDataParameter)dbCommand.Parameters[paramName]).Value = IfNullReturnDbNullValue(paramValue);
+        }
+
+        public static void ClearValues(this IDataParameterCollection parametersConnection)
+        {
+            foreach (IDataParameter param in parametersConnection) param.Value = DBNull.Value;
+        }
+
+        [Obsolete("This method is obsolete, use dbCommand.parameters.Clear instead")]
         public static void CleanAllParamValues(this IDbCommand dbCommand)
         {
             for (int i = 0; i < dbCommand.Parameters.Count; i++) ((IDataParameter)dbCommand.Parameters[i]).Value = DBNull.Value;

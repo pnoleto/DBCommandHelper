@@ -4,6 +4,7 @@
     {
         SqlServer = 1,
         Postgres,
-        Oracle
+        Oracle,
+        MySql
     }
 }
