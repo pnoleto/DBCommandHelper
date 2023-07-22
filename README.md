@@ -6,4 +6,4 @@ DBCommandHelper is an Extension method based Class that let you to create sql pa
 2. Set the refference
 3. ![image](https://user-images.githubusercontent.com/48934827/153776319-446bf5c3-5c03-4954-8168-dac260b09370.png)
 4. Use the Extension methods
-![Captura de tela 2023-07-22 191030](https://github.com/pnoleto/DBCommandHelper/assets/48934827/5e11acfc-20f4-40ae-b4db-3b123cd58559)
+5. ![image1](https://user-images.githubusercontent.com/48934827/255352968-5e11acfc-20f4-40ae-b4db-3b123cd58559.png)
