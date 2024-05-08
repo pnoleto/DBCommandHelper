@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <Authors>Phelipe Noleto</Authors>
     <Company></Company>
     <Description>DBCommandHelper is an Extension method based Class that let you to create sql parameter and easily apply in a DB Connection with any connector.</Description>
